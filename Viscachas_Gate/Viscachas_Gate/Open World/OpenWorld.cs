@@ -42,9 +42,6 @@ namespace Viscachas_Gate
         /// <param name="pCameraSize"></param>
         public void UpdateDisplay(Player pPlayer, int pCameraSize)
         {
-            //clears the console of everything to render next frame
-            Console.Clear();
-
             //saves the player position to save on calls to other class
             int[] playerPosition = pPlayer.GetPosition();
 

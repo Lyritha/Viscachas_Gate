@@ -1,4 +1,5 @@
 ﻿using System.Media;
+using WMPLib;
 
 namespace Viscachas_Gate
 {
@@ -8,15 +9,18 @@ namespace Viscachas_Gate
 
         static void Main(string[] args)
         {
-            StoryLibrary storyLibrary = new StoryLibrary();
-            WritingStyles writingStyles = new WritingStyles();
-            ViscachaGate viscachaGate = new ViscachaGate();
-            Menus menu = new Menus(storyLibrary);
+            StoryLibrary storyLibrary = new();
+            WritingStyles writingStyles = new();
+            MainGame viscachaGate = new();
+            Menus menu = new(storyLibrary);
+            AudioHandler audioHandler = new();
 
             Console.ForegroundColor = ConsoleColor.White;
 
-            //start playing menu music
-            new SoundPlayer($"Audio/Music/scott-buckley-permafrost.wav").PlayLooping();
+            //play main menu music
+            Console.WriteLine("Initializing AudioHandler...");
+            audioHandler.PlayMainMenuMusic();
+            Console.Clear();
 
             switch (menu.MainMenu())
             {
@@ -28,7 +32,7 @@ namespace Viscachas_Gate
                 //new game
                 case 1:
                     //storyLibrary.Intro();
-                    viscachaGate.Game(storyLibrary, menu);
+                    viscachaGate.Game(storyLibrary, menu, audioHandler);
                     break;
 
                 //credits

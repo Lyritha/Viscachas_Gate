@@ -93,7 +93,6 @@ namespace Viscachas_Gate
                         break;
                 }
 
-                //clears the console before going to the rest of the game
                 Console.Clear();
             }
             return uiPosition;
