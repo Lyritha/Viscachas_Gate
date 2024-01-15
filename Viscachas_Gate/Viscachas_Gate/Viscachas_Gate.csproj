@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Dungeons\Emperors_Treasure\**" />
+    <Compile Remove="Dungeons\Explorers_Maze\**" />
+    <Compile Remove="Dungeons\Resonant Vaults\**" />
+    <Compile Remove="Dungeons\Sand_Chambers\**" />
+    <Compile Remove="Dungeons\The_Dark_Wet_Caves\**" />
+    <EmbeddedResource Remove="Dungeons\Emperors_Treasure\**" />
+    <EmbeddedResource Remove="Dungeons\Explorers_Maze\**" />
+    <EmbeddedResource Remove="Dungeons\Resonant Vaults\**" />
+    <EmbeddedResource Remove="Dungeons\Sand_Chambers\**" />
+    <EmbeddedResource Remove="Dungeons\The_Dark_Wet_Caves\**" />
+    <None Remove="Dungeons\Emperors_Treasure\**" />
+    <None Remove="Dungeons\Explorers_Maze\**" />
+    <None Remove="Dungeons\Resonant Vaults\**" />
+    <None Remove="Dungeons\Sand_Chambers\**" />
+    <None Remove="Dungeons\The_Dark_Wet_Caves\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Windows.Extensions" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>
