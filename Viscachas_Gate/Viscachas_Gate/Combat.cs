@@ -232,7 +232,7 @@ namespace Viscachas_Gate
                     //if the player has a healing potion
                     if (player.GetInventory().GetHealingPotionAmount() > 0)
                     {
-                        player.MaxHeal();
+                        player.PotionHeal();
                         player.GetInventory().AddHealingPotionAmount(-1);
                         playerActionText = $"You healed, you now have {player.GetInventory().GetHealingPotionAmount()} left.";
                     }
@@ -244,6 +244,7 @@ namespace Viscachas_Gate
 
                 //player evade
                 case 3:
+                    playerDamage = 0;
                     //75% chance of player evading attacks
                     if (random.Next(0,4) > 0) 
                     { 

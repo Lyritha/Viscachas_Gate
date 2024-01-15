@@ -42,8 +42,8 @@ namespace Viscachas_Gate
             Console.WriteLine();
 
             //shows equipped equipment
-            Console.WriteLine($"Slot 1: {equippedItems[0].GetName()}");
-            Console.WriteLine($"Slot 2: {equippedItems[1].GetName()}");
+            Console.WriteLine($"Slot 1: {equippedItems[0].GetName()} : Min Damage:{equippedItems[0].GetItemDamage()[0]}, Max Damage:{equippedItems[0].GetItemDamage()[1]}");
+            Console.WriteLine($"Slot 2: {equippedItems[1].GetName()} : Min Damage:{equippedItems[1].GetItemDamage()[0]}, Max Damage:{equippedItems[1].GetItemDamage()[1]}");
             Console.WriteLine();
 
 

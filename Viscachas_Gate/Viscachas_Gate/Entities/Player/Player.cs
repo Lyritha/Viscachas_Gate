@@ -24,7 +24,12 @@ namespace Viscachas_Gate
 
         Inventory inventory = new Inventory();
 
-        public Player(Menus pMenu) => menu = pMenu;
+        public Player(Menus pMenu)
+        {
+            menu = pMenu;
+            AddMaxHealth(100);
+            MaxHeal();
+        }
 
 
 
@@ -144,7 +149,7 @@ namespace Viscachas_Gate
                     //if the player has a healing potion
                     if (GetInventory().GetHealingPotionAmount() > 0)
                     {
-                        MaxHeal();
+                        PotionHeal();
                         GetInventory().AddHealingPotionAmount(-1);
                         Console.WriteLine($"You healed, you now have {GetInventory().GetHealingPotionAmount()} left.");
                     }
@@ -308,7 +313,6 @@ namespace Viscachas_Gate
         public void SetPlayerPosition(int[] pPosition) => position = pPosition;
         public void SetDungeonProgress(int pDungeonProgress) => dungeonProgress = pDungeonProgress;
         public void SetIsInDungeon(bool pIsInDungeon) => isInDungeon = pIsInDungeon;
-        public void MaxHeal() => SetHealth(maxHealth);
 
         public int GetRequiredExperience() => requiredExperience;
         public int GetCurrentExperience() => experience;
@@ -317,5 +321,13 @@ namespace Viscachas_Gate
         public bool GetIsInDungeon() => isInDungeon;
         public int[] GetDistributedPoints() => distributedPoints;
         public Inventory GetInventory() => inventory;
+
+
+        public void MaxHeal() => SetHealth(maxHealth);
+        public void PotionHeal()
+        {
+            int healedAmount = random.Next((int)maxHealth / 2, (int)maxHealth / 4 * 3);
+            health += (healedAmount + health !> maxHealth) ? healedAmount : maxHealth - health ;
+        }
     }
 }

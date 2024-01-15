@@ -277,9 +277,15 @@ namespace Viscachas_Gate
             Console.WriteLine($"Coins: {pPlayer.GetInventory().GetCoins()}");
             Console.WriteLine();
 
+            //gets the cost of all the items
+            int mapCost = 250 * pDungeonLevel;
+            int potionCost = 1200 * pPlayer.GetInventory().GetMaxHealingPotionAmount();
+            int armorCost = 500 + 500 * (int)pPlayer.GetArmor();
+
             //show items you can purchase
-            Console.WriteLine($"Map: {250 * pDungeonLevel} coins");
-            Console.WriteLine($"Max Potions: {1000 * pPlayer.GetInventory().GetMaxHealingPotionAmount()} coins");
+            Console.WriteLine($"Map: {mapCost} coins");
+            Console.WriteLine($"Max Potions: {potionCost} coins");
+            Console.WriteLine($"Armor +2: {armorCost} coins");
             Console.WriteLine();
 
             //ask player what item they wish to buy
@@ -303,10 +309,10 @@ namespace Viscachas_Gate
                             if (!pPlayer.GetInventory().ContainsByID(100 + pPlayer.GetDungeonProgress()))
                             {
                                 //check if player has enough money
-                                if (pPlayer.GetInventory().GetCoins() >= 250 * pDungeonLevel)
+                                if (pPlayer.GetInventory().GetCoins() >= mapCost)
                                 {
                                     //removes the paid money
-                                    pPlayer.GetInventory().AddCoins(-(250 * pDungeonLevel));
+                                    pPlayer.GetInventory().AddCoins(-mapCost);
 
                                     //update inventory to reflect purchase
                                     pPlayer.GetInventory().AddItem(new Map(pPlayer.GetDungeonProgress()));
@@ -322,18 +328,35 @@ namespace Viscachas_Gate
                         case "potion":
                         case "healing":
                         case "max potions":
+                        case "max potion":
                         case "max healing potions":
+                        case "max healing potion":
                         case "max healing":
                             //check if player has enough money
-                            if (pPlayer.GetInventory().GetCoins() >= 750 * pPlayer.GetInventory().GetMaxHealingPotionAmount())
+                            if (pPlayer.GetInventory().GetCoins() >= potionCost)
                             {
                                 //removes the paid money
-                                pPlayer.GetInventory().AddCoins(-(750 * pPlayer.GetInventory().GetMaxHealingPotionAmount()));
+                                pPlayer.GetInventory().AddCoins(-potionCost);
 
                                 //update inventory to reflect purchase
                                 pPlayer.GetInventory().AddMaxHealingPotionAmount(1);
 
                                 Console.WriteLine("You purchased another potion slot!");
+                            }
+                            else { Console.WriteLine("You do not have enough Coins!"); }
+                            break;
+
+                        case "armor":
+                            //check if player has enough money
+                            if (pPlayer.GetInventory().GetCoins() >= armorCost)
+                            {
+                                //removes the paid money
+                                pPlayer.GetInventory().AddCoins(-armorCost);
+
+                                //update stats to reflect purchase
+                                pPlayer.AddArmor(2  );
+
+                                Console.WriteLine("You purchased +2 armor");
                             }
                             else { Console.WriteLine("You do not have enough Coins!"); }
                             break;
@@ -355,10 +378,10 @@ namespace Viscachas_Gate
             {
                 writingStyles.OverwriteLines(2);
                 Console.WriteLine("Press any key to close the store");
+                Console.ReadKey(true);
             }
 
 
-            Console.ReadKey(true);
         }
 
 

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using WMPLib;
 
@@ -16,107 +14,117 @@ namespace Viscachas_Gate
 
         public AudioHandler()
         {
+            //import all the music and stops the music to make sure it doesn't all suddenly play
             mainMenuMusic = CreateAudioChannel("Audio/Music/scott-buckley-permafrost.mp3", true);
             openWorldMusic = CreateAudioChannel("Audio/Music/scott-buckley-phaseshift.mp3", true);
             dungeonMusic = CreateAudioChannel("Audio/Music/Ghostrifter-Official-Resurgence.mp3", true);
             bossMusic = CreateAudioChannel("Audio/Music/Damiano-Baldoni-Charlotte.mp3", true);
-
-            mainMenuMusic.controls.stop();
-            openWorldMusic.controls.stop();
-            dungeonMusic.controls.stop();
-            bossMusic.controls.stop();
         }
 
 
         /// <summary>
-        /// handles playing the music for the main menu
+        /// plays the main menu music, blends from and to other songs if needed
         /// </summary>
-        public void PlayMainMenuMusic()
+        public async void PlayMainMenuMusic() => await Task.WhenAll(FadeInAudioAsync(mainMenuMusic), FadeOutAudioAsync(openWorldMusic), FadeOutAudioAsync(dungeonMusic), FadeOutAudioAsync(bossMusic));
+        /// <summary>
+        /// plays the open world music, blends from and to other songs if needed
+        /// </summary>
+        public async void PlayOpenWorldMusic() => await Task.WhenAll(FadeInAudioAsync(openWorldMusic), FadeOutAudioAsync(mainMenuMusic), FadeOutAudioAsync(dungeonMusic), FadeOutAudioAsync(bossMusic));
+        /// <summary>
+        /// plays the dungeon music, blends from and to other songs if needed
+        /// </summary>
+        public async void PlayDungeonMusic() => await Task.WhenAll(FadeInAudioAsync(dungeonMusic), FadeOutAudioAsync(mainMenuMusic), FadeOutAudioAsync(openWorldMusic), FadeOutAudioAsync(bossMusic));
+        /// <summary>
+        /// plays the boss music, blends from and to other songs if needed
+        /// </summary>
+        public async void PlayBossMusic() => await Task.WhenAll(FadeInAudioAsync(bossMusic), FadeOutAudioAsync(mainMenuMusic), FadeOutAudioAsync(openWorldMusic), FadeOutAudioAsync(dungeonMusic));
+        
+
+        
+        /// <summary>
+        /// handles increasing the volume of a media player smoothly
+        /// </summary>
+        /// <param name="pMedia"></param>
+        /// <returns></returns>
+        async Task FadeInAudioAsync(WindowsMediaPlayer pMedia)
         {
-            //plays the menu music
-            mainMenuMusic.controls.play();
-            //required delay for when starting the game
-            Thread.Sleep(500);
-            FadeInAudio(mainMenuMusic);
-
-            //stop all other forms of music
-            FadeOutAudio(openWorldMusic);
-            FadeOutAudio(dungeonMusic);
-            FadeOutAudio(bossMusic);
-        }
-
-        public void PlayOpenWorldMusic()
-        {
-            //plays the open world music
-            openWorldMusic.controls.play();
-            Thread.Sleep(500);
-            FadeInAudio(openWorldMusic);
-
-            //stop all other forms of music
-            FadeOutAudio(mainMenuMusic);
-            FadeOutAudio(dungeonMusic);
-            FadeOutAudio(bossMusic);
-        }
-
-        public void PlayDungeonMusic()
-        {
-            //plays the dungeon music
-            dungeonMusic.controls.play();
-            Thread.Sleep(500);
-            FadeInAudio(dungeonMusic);
-
-            //stop all other forms of music
-            FadeOutAudio(mainMenuMusic);
-            FadeOutAudio(openWorldMusic);
-            FadeOutAudio(bossMusic);
-        }
-
-        public void PlayBossMusic()
-        {
-            //plays the boss music
-            bossMusic.controls.play();
-            Thread.Sleep(500);
-            FadeInAudio(bossMusic);
-
-            //stop all other forms of music
-            FadeOutAudio(mainMenuMusic);
-            FadeOutAudio(openWorldMusic);
-            FadeOutAudio(dungeonMusic);
-
-        }
-
-         void FadeInAudio(WindowsMediaPlayer pMedia)
-        {
+            pMedia.controls.play();
             pMedia.settings.volume = 0;
 
-            for (int step = 0; step < 100; step += 2)
+            await Task.Run(() =>
             {
-                pMedia.settings.volume = step;
-                Thread.Sleep(1);
-            }
+                pMedia.controls.play();
+                pMedia.settings.volume = 0;
+
+                bool free = false;
+                do
+                {
+                    try
+                    {
+                        for (int step = 0; step < 100; step += 2)
+                        {
+                            pMedia.settings.volume = step;
+                            Thread.Sleep(1);
+                        }
+
+                        free = true;
+                    }
+                    catch
+                    {
+                        Thread.Sleep(10);
+                    }
+                } while (!free);
+
+                pMedia.settings.volume = 100;
+            });
 
             pMedia.settings.volume = 100;
         }
-
-         void FadeOutAudio(WindowsMediaPlayer pMedia)
+        /// <summary>
+        /// handles decreasing the volume of a media player smoothly
+        /// </summary>
+        /// <param name="pMedia"></param>
+        /// <returns></returns>
+        async Task FadeOutAudioAsync(WindowsMediaPlayer pMedia)
         {
             if (pMedia.playState == WMPLib.WMPPlayState.wmppsPlaying)
             {
-                for (int step = 100; step > 0; step -= 2)
+                await Task.Run(() =>
                 {
-                    pMedia.settings.volume = step;
-                    Thread.Sleep(1);
-                }
+                    bool free = false;
+                    do
+                    {
+                        try
+                        {
+                            for (int step = 100; step > 0; step -= 2)
+                            {
+                                pMedia.settings.volume = step;
+                                Thread.Sleep(1);
+                            }
+
+                            free = true;
+                        }
+                        catch
+                        {
+                            Thread.Sleep(10);
+                        }
+                    } while (!free);
+
+
+                });
 
                 pMedia.controls.stop();
             }
         }
+
+
 
         WindowsMediaPlayer CreateAudioChannel(string filePath, bool isLooping)
         {
             WindowsMediaPlayer audioChannel = new WindowsMediaPlayer();
             audioChannel.URL = filePath;
             audioChannel.settings.setMode("loop", isLooping);
+            audioChannel.controls.stop();
             return audioChannel;
         }
     }

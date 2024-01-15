@@ -11,7 +11,7 @@ namespace Viscachas_Gate
         public Equipment_Sword()
         {
             name = "Sword";
-            itemDamage = new int[] { 4, 15 };
+            itemDamage = new int[] { 6, 12 };
             speedBonus = 0f;
         }
     }
