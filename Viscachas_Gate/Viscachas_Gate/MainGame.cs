@@ -3,18 +3,21 @@ using System.Numerics;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class MainGame
     {
-        Menus menu = null;
-        AudioHandler audioHandler = null;
-        
-        Player player = null;
-        OpenWorld openWorld = null;
-        Dungeon dungeon = null;
-        
-        Combat combat = null;
+        SaveData saveData;
 
-        StoryLibrary storyLibrary = null;
+        Menus menu;
+        AudioHandler audioHandler;
+        
+        Player player;
+        OpenWorld openWorld;
+        Dungeon dungeon;
+        
+        Combat combat;
+
+        StoryLibrary storyLibrary;
         PrintBehaviors printBehaviors = new();
 
 
@@ -22,19 +25,35 @@ namespace Viscachas_Gate
         int dungeonLevel = 5;
         bool hasReadDungeonStory = false;
 
-        public void Game(StoryLibrary pStoryLibrary, Menus pMenu, AudioHandler pAudioHandler) 
-        {
-            GameSetup(pStoryLibrary, pMenu, pAudioHandler);
-            pMenu.PlayGateAnimation();
-            EnterOpenWorld();
-        }
-
-        void GameSetup(StoryLibrary pStoryLibrary, Menus pMenu, AudioHandler pAudioHandler)
+        /// <summary>
+        /// sets the references for this class
+        /// </summary>
+        /// <param name="pStoryLibrary"></param>
+        /// <param name="pMenu"></param>
+        /// <param name="pAudioHandler"></param>
+        public MainGame(StoryLibrary pStoryLibrary, Menus pMenu)
         {
             //gets reference to the story library and menu
             storyLibrary = pStoryLibrary;
             menu = pMenu;
+        }
+
+
+
+        public void NewGame(SaveData pSaveData, AudioHandler pAudioHandler) 
+        {
+            NewGameSetup(pSaveData, pAudioHandler);
+            menu.PlayGateAnimation(audioHandler);
+            EnterOpenWorld();
+        }
+        void NewGameSetup(SaveData pSaveData, AudioHandler pAudioHandler)
+        {
+            saveData = pSaveData;
             audioHandler = pAudioHandler;
+
+            //generate open world
+            openWorld = new OpenWorld();
+            openWorld.NewOpenWorld();
 
             //creates ther player and displays the character creator
             player = new Player(menu);
@@ -43,16 +62,54 @@ namespace Viscachas_Gate
             //create the combat class, while giving the player as a reference
             combat = new Combat(player);
 
-            //generate open world
-            openWorld = new OpenWorld();
+            //spawns the player in the open world
+            player.SpawnPlayerOpenWorld(openWorld);
+
         }
+
+
+
+        public void LoadGame(SaveData pSaveData, AudioHandler pAudioHandler)
+        {
+            LoadGameSetup(pSaveData, pAudioHandler);
+            menu.PlayGateAnimation(audioHandler);
+
+            if (!player.GetIsInDungeon())
+            {
+                //normally enter world
+                EnterOpenWorld();
+            }
+            else
+            {
+                //if you are in dungeon then first load the dungeon
+                EnterLoadedDungeon();
+                EnterOpenWorld();
+            }
+        }
+        void LoadGameSetup(SaveData pSaveData, AudioHandler pAudioHandler)
+        {
+            audioHandler = pAudioHandler;
+            saveData = pSaveData;
+
+            //generate open world
+            openWorld = saveData.LoadOpenWorld("openWorld");
+
+            //creates the player and displays the character creator
+            player = saveData.LoadPlayer("player");
+
+            //loads dungeon if needed
+            if (player.GetIsInDungeon()) { dungeon = saveData.LoadDungeon("dungeon"); }
+
+            //create the combat class, while giving the player as a reference
+            combat = new Combat(player);
+
+        }
+
+
 
         void EnterOpenWorld()
         {
             audioHandler.PlayOpenWorldMusic();
-
-            //spawns the player in the open world
-            player.SpawnPlayerOpenWorld(openWorld);
 
             //runs while the player hasn't finished all the dungeons yet
             while (player.GetDungeonProgress() <= 5)
@@ -73,7 +130,13 @@ namespace Viscachas_Gate
                     EnterDungeon();
                     //start playing open world music again once the player leaves the dungeon
                     audioHandler.PlayOpenWorldMusic();
+
+                    //spawns the player in the open world
+                    player.SpawnPlayerOpenWorld(openWorld);
                 }
+
+                //automatically saves progress
+                AutoSave();
             }
 
             //once the game is cleared
@@ -104,7 +167,50 @@ namespace Viscachas_Gate
 
 
                 //shows current room
-                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(dungeon.GetRoomObject(player.GetPosition()).GetRoomArt());
+                player.PrintShowStats();
+
+                //allows player to move
+                player.PlayerInput(openWorld, dungeon);
+
+                EnterRoom();
+
+                //automatically saves progress
+                AutoSave();
+            }
+
+            //assigns values if dungeon is cleared
+            if (dungeon.GetIsDungeonCleared())
+            {
+                player.AddDungeonProgress(1);
+                dungeonLevel += 5;
+                hasReadDungeonStory = false;
+            }
+
+            //spawns the player in the open world
+            player.SpawnPlayerOpenWorld(openWorld);
+
+            //transports player back to open world, and heals them to their max health
+            player.SetIsInDungeon(false);
+            player.MaxHeal();
+            player.GetInventory().RechargeHealingPotion();
+        }
+        void EnterLoadedDungeon()
+        {
+            //start playing dungeon music
+            audioHandler.PlayDungeonMusic();
+
+            //updates combat
+            combat.UpdateDungeonVar(dungeon);
+
+            //dungeon loop, keeps running until either the dungeon is cleared or the player died
+            while (player.GetHealth() != 0 && !dungeon.GetIsDungeonCleared())
+            {
+                printBehaviors.ClearBuffer();
+                Console.Clear();
+
+
+                //shows current room
                 Console.WriteLine(dungeon.GetRoomObject(player.GetPosition()).GetRoomArt());
                 player.PrintShowStats();
 
@@ -175,6 +281,15 @@ namespace Viscachas_Gate
                     }
                 }
             }
+        }
+
+        void AutoSave()
+        {
+            //autosaves progress
+            saveData.SaveMainGame(this, "mainGame");
+            saveData.SaveOpenWorld(openWorld, "openWorld");
+            saveData.SavePlayer(player, "player");
+            if (player.GetIsInDungeon()) { saveData.SaveDungeon(dungeon, "dungeon"); }
         }
     }
 }

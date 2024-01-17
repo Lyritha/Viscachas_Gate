@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class OpenWorldGenerator
     {
         //saves lengths for slight optimization to reduce excesive calls, also saves the array

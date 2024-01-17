@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class Enemy : Entity
     {
+        [NonSerialized]
         Random random = new Random();
 
         protected float experienceModifier = 1;
         protected float droppedCoinsModifier = 1;
 
         //stores the base damage the entity does, allows for adjusting
-        protected int[] baseDamageStats = { 1, 11 };
+        protected int[] baseDamageStats = { 4, 16 };
 
         protected int mapDropChance = 5;
 
@@ -24,7 +26,7 @@ namespace Viscachas_Gate
 
             while (GetStatPointsAmount() >= 0)
             {
-                switch (random.Next(0, 5))
+                switch (random.Next(0, 4))
                 {
                     case 0:
                         AddMaxHealth((int)statMultipliers[0]);
@@ -43,11 +45,6 @@ namespace Viscachas_Gate
 
                     case 3:
                         AddCriticalMultiplier(statMultipliers[3]);
-                        AddStatPointsAmount(-1);
-                        break;
-
-                    case 4:
-                        AddSpeed(statMultipliers[4]);
                         AddStatPointsAmount(-1);
                         break;
                 }

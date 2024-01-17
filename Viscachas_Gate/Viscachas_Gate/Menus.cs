@@ -5,14 +5,16 @@ using System.Threading.Tasks.Dataflow;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class Menus
     {
         //saves all the different ascii art used for the main menu
         List<string[]> asciiMainMenu = new List<string[]>();
 
         //allows for fancy writing to the screen
-        PrintBehaviors printBehaviors = new PrintBehaviors();
-        StoryLibrary storyLibrary = null;
+        SaveData loadSaveFiles = new();
+        PrintBehaviors printBehaviors = new();
+        StoryLibrary storyLibrary;
 
         //stat distribution menu related variables
         readonly char[] statMulitplierType = { ' ', 'x', '%', 'x', 'x' };
@@ -95,7 +97,7 @@ namespace Viscachas_Gate
         /// <summary>
         /// the menu shown when you pause the game with some helpful information
         /// </summary>
-        public void PauseMenu(Player pPlayer)
+        public void PauseMenu(Player pPlayer, OpenWorld pOpenWorld, Dungeon pDungeon)
         {
             Console.Clear();
 
@@ -115,7 +117,7 @@ namespace Viscachas_Gate
                 Console.WriteLine("'map' to see the map, only works if you have the map.");
             }
 
-            Console.WriteLine("\nHit the escape key to close this menu,\nor press 'e' to close the game (WARNING: this will wipe your progress.)");
+            Console.WriteLine("\nHit the escape key to close this menu,\nor press 'e' to close the game, this will save your progress.");
             string userInput = "";
             do
             {
@@ -124,7 +126,13 @@ namespace Viscachas_Gate
                 if (userInput == "e")
                 {
                     Console.WriteLine("Are you sure that you wish to close the application? Yes/No");
-                    if (storyLibrary.AskPlayer()) { Environment.Exit(0); }
+                    if (storyLibrary.AskPlayer()) 
+                    {
+                        loadSaveFiles.SaveOpenWorld(pOpenWorld, "openWorld");
+                        loadSaveFiles.SavePlayer(pPlayer, "player");
+                        if (pPlayer.GetIsInDungeon()) { loadSaveFiles.SaveDungeon(pDungeon, "dungeon"); }
+                        Environment.Exit(0);
+                    }
                     else { printBehaviors.OverwriteLines(1); }
                 }
             } while (userInput != "escape" && userInput != "~");
@@ -273,8 +281,6 @@ namespace Viscachas_Gate
         /// <param name="pPlayer"></param>
         public void StoreMenu(int pDungeonLevel, Player pPlayer)
         {
-
-
             bool isInStore = true;
             while (isInStore)
             {
@@ -285,7 +291,7 @@ namespace Viscachas_Gate
 
                 //gets the cost of all the items
                 int mapCost = 250 * pDungeonLevel;
-                int potionCost = 1200 * pPlayer.GetInventory().GetMaxHealingPotionAmount();
+                int potionCost = 1500 + 3000 * (pPlayer.GetInventory().GetMaxHealingPotionAmount() - 1);
                 int armorCost = 500 + 500 * (int)pPlayer.GetArmor();
 
                 //show items you can purchase
@@ -297,10 +303,7 @@ namespace Viscachas_Gate
                 Console.WriteLine("Which item would you like to buy?\nType 'stop' to stop shopping");
                 Console.WriteLine();
 
-                string userInput = "";
-
-                userInput = Console.ReadLine().ToLower();
-
+                string userInput = Console.ReadLine().ToLower();
                 switch (userInput)
                 {
                     //if player wants to purchase map
@@ -322,6 +325,7 @@ namespace Viscachas_Gate
                             else { Console.WriteLine("You do not have enough Coins!"); }
                         }
                         else { Console.WriteLine("You already have a map for this dungeon!"); }
+                        Console.ReadKey(true);
                         break;
 
                     //if player wants to purchase a healing potion
@@ -345,6 +349,7 @@ namespace Viscachas_Gate
                             Console.WriteLine("You purchased another potion slot!");
                         }
                         else { Console.WriteLine("You do not have enough Coins!"); }
+                        Console.ReadKey(true);
                         break;
 
                     case "armor":
@@ -360,6 +365,7 @@ namespace Viscachas_Gate
                             Console.WriteLine("You purchased +2 armor");
                         }
                         else { Console.WriteLine("You do not have enough Coins!"); }
+                        Console.ReadKey(true);
                         break;
 
                     //if the player no longer wants to buy something
@@ -372,8 +378,6 @@ namespace Viscachas_Gate
                         Console.WriteLine($"{userInput} is not sold here");
                         break;
                 }
-
-                Console.ReadKey(true);
             }
 
 
@@ -533,11 +537,11 @@ namespace Viscachas_Gate
             pPlayer.UpdateStats(distributedPointsChanges);
         }
 
-        public void PlayGateAnimation()
+        public void PlayGateAnimation(AudioHandler pAudioHandler)
         {
             string[] gate = File.ReadAllText($"ascii_art/Door.txt").Split('■');
 
-            new SoundPlayer($"Audio/Door_Open.WAV").Play();
+            pAudioHandler.playDoorOpenSound();
 
             foreach (string frame in gate)
             {

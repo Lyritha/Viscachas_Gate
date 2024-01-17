@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class Compass : Item
     {
         public Compass() 

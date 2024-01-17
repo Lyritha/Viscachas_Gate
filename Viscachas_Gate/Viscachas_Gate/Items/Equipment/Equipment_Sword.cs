@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class Equipment_Sword : Equipment
     {
         public Equipment_Sword()

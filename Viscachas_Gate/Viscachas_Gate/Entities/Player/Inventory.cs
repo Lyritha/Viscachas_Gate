@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class Inventory
     {
         List<Item> itemList = new List<Item>();
@@ -22,7 +23,6 @@ namespace Viscachas_Gate
         { 
             //player always starts with a compass
             itemList.Add(new Compass());
-            itemList.Add(new Map(1));
         }
 
 

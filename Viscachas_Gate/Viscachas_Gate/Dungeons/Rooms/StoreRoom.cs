@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class StoreRoom : TemplateRoom
     {
         public StoreRoom(string[] pAsciiArt, bool[] pHallwaysLayout)

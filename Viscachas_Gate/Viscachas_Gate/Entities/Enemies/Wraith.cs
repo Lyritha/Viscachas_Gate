@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class Wraith : Enemy
     {
         public Wraith()
@@ -13,8 +14,9 @@ namespace Viscachas_Gate
             //change some base stats for the wraith sub-class
             SetName("Wraith");
             AddMaxHealth(-50);
-            AddArmor(15);
-            AddSpeed(0.5f * GetLevel());
+            AddArmor(15 + (int)(1f * GetLevel()));
+            AddStrength(0.5f * GetLevel());
+            AddSpeed(2 + (int)(0.30 * GetLevel()));
             experienceModifier = 1.5f;
             droppedCoinsModifier = 1.4f;
         }

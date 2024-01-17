@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class Room : TemplateRoom
     {
         bool EnemyEncounter = false;
+        [NonSerialized]
         Random random = new Random();
 
         /// <summary>

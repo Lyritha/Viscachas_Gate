@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace Viscachas_Gate
 {
 
+    [Serializable]
     internal class StoryLibrary
     {
         PrintBehaviors printBehaviors = new PrintBehaviors();
@@ -16,7 +17,6 @@ namespace Viscachas_Gate
         {
             //clears the console to remove anything currently on the screen
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.White;
 
             printBehaviors.WriteLineCharactersSlowlyClamped("In a world once teeming with an ancient civilization of wise and inquisitive Viscachas, their society thrived on intellectual prowess and insatiable curiosity. These rodent-like creatures cultivated sprawling cities blending seamlessly with nature, adorned with intricately designed structures.", 1);
             Console.WriteLine();
@@ -41,7 +41,6 @@ namespace Viscachas_Gate
         {
             //clears the console to remove anything currently on the screen
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.White;
 
             bool hasReadStory = pHasReadDungeonStory;
 
@@ -164,13 +163,8 @@ namespace Viscachas_Gate
         {
             //clears the console to remove anything currently on the screen
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.White;
 
             printBehaviors.WriteLineCharactersSlowlyClamped("Finished Game (yipeeee)", 1);
-
-
-
-
         }
 
 

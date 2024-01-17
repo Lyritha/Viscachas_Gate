@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class OpenWorld
     {
         //holds the openworld itself
+
         int[,] openWorld;
         int openWorldLength = 0;
 
@@ -23,16 +25,19 @@ namespace Viscachas_Gate
             new DungeonEntrance("dungeon", true, ConsoleColor.Magenta, 0)
         };
 
-        //constructor, runs when the object gets created
-        public OpenWorld(int pOpenWorldSize = 50, int pOpenWorldDetail = 50, int pDungeonAmount = 5)
+
+
+        public void NewOpenWorld(int pOpenWorldSize = 50, int pOpenWorldDetail = 50, int pDungeonAmount = 5)
         {
             //sets the size of the open world
             openWorld = new int[pOpenWorldSize, pOpenWorldSize];
             openWorldLength = pOpenWorldSize;
 
             //fills the grid with values corresponding to biomes
-            OpenWorldGenerator generator = new OpenWorldGenerator(openWorld, biomes, pOpenWorldDetail, pDungeonAmount );
+            OpenWorldGenerator generator = new OpenWorldGenerator(openWorld, biomes, pOpenWorldDetail, pDungeonAmount);
         }
+
+
 
         /// <summary>
         /// shows the map, but zoomed in, also shows other parts of the map when next to the edges of the map
@@ -69,13 +74,20 @@ namespace Viscachas_Gate
             Console.ResetColor();
         }
 
-        //checks if value is within grid, modify to show other side of grid
+        /// <summary>
+        /// checks if value is within grid, modify to show other side of grid
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="pOpenWorldLength"></param>
+        /// <returns></returns>
         int ClampToGrid(int value, int pOpenWorldLength)
         {
             if (value < 0) { return value += pOpenWorldLength; }
             else if (value >= pOpenWorldLength) { return value -= pOpenWorldLength; }
             return value;
         }
+
+
 
         public int[,] GetOpenWorld() => openWorld;
         public List<BiomeTile> GetBiomes() => biomes;

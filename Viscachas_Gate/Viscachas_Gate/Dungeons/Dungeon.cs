@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class Dungeon
     {
+        [NonSerialized]
         Random random = new Random();
 
         //creates a 2d grid holding the dungeon in it

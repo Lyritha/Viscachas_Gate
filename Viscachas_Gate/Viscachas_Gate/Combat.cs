@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class Combat
     {
         //creates a random object to generate random numbers
+        [NonSerialized]
         Random random = new Random();
 
         Enemy enemy;
@@ -72,9 +74,6 @@ namespace Viscachas_Gate
             //generates the enemy
             GenerateEnemy();
 
-            //clears the console before comencing combat
-            Console.Clear();
-
             //loops until the fight is over
             BattleLoop();
 
@@ -113,13 +112,13 @@ namespace Viscachas_Gate
             if (playerLevel <= dungeonLevel)
             {
                 //set enemy level based on player level
-                enemyLevel = random.Next(playerLevel - 3, playerLevel);
+                enemyLevel = random.Next(playerLevel - 3, playerLevel + 1);
             }
             //if player is above dungeon level
             else
             {
                 //set enemy level based on player level
-                enemyLevel = random.Next(dungeonLevel - 5, dungeonLevel + 2);
+                enemyLevel = random.Next(dungeonLevel, playerLevel);
             }
 
             //makes sure the enemy level can't be below 0
@@ -147,6 +146,7 @@ namespace Viscachas_Gate
 
                 } while (!PlayerInput());
 
+                //allows user and bot to make their moves
                 bool playerEvaded = PlayerTurn();
                 EnemyTurn(playerEvaded);
 
@@ -180,14 +180,8 @@ namespace Viscachas_Gate
 
                 //display the winning screen
                 DisplayWin(droppedExperience, droppedCoins);
-                pAudioHandler.PlayWinEffect();
+                pAudioHandler.PlayWinSound();
                 
-                Console.ReadKey(true);
-
-                //apply changes of experience and coins
-                player.AddExperience(droppedExperience);
-                player.AddCoins(droppedCoins);
-
                 //if the player doesn't have a map and the enemy dropped one
                 if (enemy.GetDroppedMap() && !player.GetInventory().ContainsByID(100 + player.GetDungeonProgress()))
                 {
@@ -196,6 +190,13 @@ namespace Viscachas_Gate
                     Console.ForegroundColor = ConsoleColor.White;
                     player.GetInventory().AddItem(new Map(player.GetDungeonProgress()));
                 }
+
+                Console.ReadKey(true);
+
+                //apply changes of experience and coins
+                player.AddExperience(droppedExperience);
+                player.AddCoins(droppedCoins);
+
             }
             else
             {
@@ -223,7 +224,7 @@ namespace Viscachas_Gate
                 //attack, based on weapon
                 case 0:
                 case 1:
-                    playerDamage = player.DealDamage(chosenMove, enemy);
+                    playerDamage = player.DealDamage(chosenMove, enemy, random);
                     playerActionText = $"You did {playerDamage:0} damage!";
                     break;
 
@@ -330,7 +331,6 @@ namespace Viscachas_Gate
         }
         void DisplayMoves()
         {
-            Console.ForegroundColor = ConsoleColor.White;
             foreach (string line in GenerateMoveDisplay())
             {
                 Console.WriteLine(line);
@@ -378,7 +378,6 @@ namespace Viscachas_Gate
         }
         void DisplayDamages()
         {
-            Console.ForegroundColor = ConsoleColor.White;
             foreach (string line in GenerateDamageDisplay())
             {
                 Console.WriteLine(line);
@@ -424,7 +423,6 @@ namespace Viscachas_Gate
         }
         void DisplayWin(int pDroppedExperience, int pDroppedCoins)
         {
-            Console.ForegroundColor = ConsoleColor.White;
             foreach (string line in GenerateWinDisplay(pDroppedExperience, pDroppedCoins))
             {
                 Console.WriteLine(line);
@@ -479,15 +477,15 @@ namespace Viscachas_Gate
 
         void DisplayStatInfo()
         {
-            Console.ForegroundColor = ConsoleColor.White;
             player.PrintShowStats();
             enemy.PrintShowStats();
         }
         void DisplayStatInfoDamage()
         {
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Red;
             player.PrintShowStatsDamage(enemyDamage);
             enemy.PrintShowStatsDamage(playerDamage);
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
     }

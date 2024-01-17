@@ -3,6 +3,7 @@ using System.Text;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class Entity
     {
 
@@ -17,7 +18,7 @@ namespace Viscachas_Gate
         //used to store information about the armor and health this entity has
         protected float maxHealth = 100;
         protected float health = 100;
-        protected float armor = 0;
+        protected int armor = 0;
 
         protected float strength = 1f;
 
@@ -82,7 +83,6 @@ namespace Viscachas_Gate
         }
         public void PrintShowStats()
         {
-            Console.ForegroundColor = ConsoleColor.White;
             foreach (string line in ShowStats())
             {
                 Console.WriteLine(line);
@@ -139,7 +139,6 @@ namespace Viscachas_Gate
         }
         public void PrintShowStatsDamage(float pDamageDone)
         {
-            Console.ForegroundColor = ConsoleColor.White;
             foreach (string line in ShowStatsDamage(pDamageDone))
             {
                 Console.WriteLine(line);
@@ -174,7 +173,7 @@ namespace Viscachas_Gate
         public float[] GetStatMultiplier() => statMultipliers;
         public int GetStatPointsAmount() => statPointsAmount;
         public int GetLevel() => level;
-        public float GetArmor() => armor;
+        public int GetArmor() => armor;
 
 
 
@@ -193,7 +192,7 @@ namespace Viscachas_Gate
         public void AddCriticalChance(float pCriticalChance) => criticalChance += pCriticalChance;
         public void AddCriticalMultiplier(float pCriticalMultiplier) => criticalMultiplier += pCriticalMultiplier;
         public void AddSpeed(float pSpeed) => speed += pSpeed;
-        public void AddArmor(float pArmor) => armor = pArmor;
+        public void AddArmor(int pArmor) => armor += pArmor;
         
         
         /// <summary>

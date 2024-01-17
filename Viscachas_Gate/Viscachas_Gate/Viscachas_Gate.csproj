@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <StartupObject>Viscachas_Gate.Program</StartupObject>
     <Title>Viscacha's Gate</Title>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

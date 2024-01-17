@@ -1,5 +1,6 @@
 ﻿namespace Viscachas_Gate
 {
+    [Serializable]
     internal class PrintBehaviors
     {
         /// <summary>

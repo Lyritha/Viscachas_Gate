@@ -5,14 +5,22 @@ using WMPLib;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class AudioHandler
     {
-        WindowsMediaPlayer mainMenuMusic = null;
-        WindowsMediaPlayer openWorldMusic = null;
-        WindowsMediaPlayer dungeonMusic = null;
-        WindowsMediaPlayer bossMusic = null;
+        [NonSerialized]
+        WindowsMediaPlayer mainMenuMusic;
+        [NonSerialized]
+        WindowsMediaPlayer openWorldMusic;
+        [NonSerialized]
+        WindowsMediaPlayer dungeonMusic;
+        [NonSerialized]
+        WindowsMediaPlayer bossMusic;
 
-        WindowsMediaPlayer winEffect = null;
+        [NonSerialized]
+        WindowsMediaPlayer doorOpen;
+        [NonSerialized]
+        WindowsMediaPlayer winEffect;
 
         public AudioHandler()
         {
@@ -23,6 +31,7 @@ namespace Viscachas_Gate
             bossMusic = CreateAudioChannel("Audio/Music/Damiano-Baldoni-Charlotte.mp3", true);
 
             //sound effects
+            doorOpen = CreateAudioChannel("Audio/Door_Open.mp3", false);
             winEffect = CreateAudioChannel("Audio/yippee-tbh.mp3", false);
 
         }
@@ -47,7 +56,8 @@ namespace Viscachas_Gate
 
 
 
-        public void PlayWinEffect() => winEffect.controls.play();
+        public void PlayWinSound() => winEffect.controls.play();
+        public void playDoorOpenSound() => doorOpen.controls.play();
 
 
 

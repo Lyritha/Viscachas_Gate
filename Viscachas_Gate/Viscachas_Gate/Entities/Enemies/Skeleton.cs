@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class Skeleton : Enemy
     {
         public Skeleton()
@@ -13,7 +14,10 @@ namespace Viscachas_Gate
             //change some base stats for the skeleton sub-class
             SetName("Skeleton");
             AddMaxHealth(-50);
-            AddArmor(5);
+            AddMaxHealth(5 * GetLevel());
+            AddArmor(5 + (int)(0.5f * GetLevel()));
+            AddStrength(0.2f * GetLevel());
+            AddSpeed((int)(0.2 * GetLevel()));
             experienceModifier = 0.8f;
             droppedCoinsModifier = 0.9f;
         }

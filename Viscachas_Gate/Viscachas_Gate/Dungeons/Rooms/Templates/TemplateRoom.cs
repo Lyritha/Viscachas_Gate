@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class TemplateRoom
     {
+        [NonSerialized]
         Random random = new Random();
 
         //all possible room layours

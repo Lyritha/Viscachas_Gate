@@ -3,13 +3,12 @@ using System.Numerics;
 
 namespace Viscachas_Gate
 {
-
+    [Serializable]
     internal class Player : Entity
     {
         int[] distributedPoints = { 0, 0, 0, 0, 0 };
 
-        Menus menu = null;
-        Random random = new Random();
+        Menus menu;
 
         //holds the position of the player
         int[] position = { 0, 0 };
@@ -78,7 +77,7 @@ namespace Viscachas_Gate
                     break;
 
                 case "escape":
-                    menu.PauseMenu(this);
+                    menu.PauseMenu(this, pOpenWorld, pDungeon);
                     break;
 
                 default:
@@ -112,20 +111,20 @@ namespace Viscachas_Gate
                 case "show map":
                 case "open map":
 
-                    if (isInDungeon)
+                    if (inventory.ContainsByID(100 + dungeonProgress))
                     {
-                        if (inventory.ContainsByID(100 + dungeonProgress)) { menu.MapMenu(pDungeon, position); }
-                        else { Console.WriteLine("You do not have this item!"); };
-                    } else { Console.WriteLine("You need to be inside a dungeon to use this item"); }
+                        if (isInDungeon) { menu.MapMenu(pDungeon, position); }
+                        else { Console.WriteLine("You need to be inside a dungeon to use this item"); };
+                    } else { Console.WriteLine("You do not have this item!"); }
 
                     break;
 
                 case "compass":
                 case "show compass":
                 case "open compass":
-                    if (isInDungeon)
+                    if (inventory.ContainsByName("Compass"))
                     {
-                        if (inventory.ContainsByName("Compass")) 
+                        if (isInDungeon)
                         {
                             //displays some info
                             Console.WriteLine($"The compass starts to spin, then stopping suddenly, pointing two way:");
@@ -133,9 +132,9 @@ namespace Viscachas_Gate
                             Console.WriteLine($"Store room (there are 2 more): Vertical:{pDungeon.GetStoreRoomCoordinates()[0]}, Horizontal:{pDungeon.GetStoreRoomCoordinates()[1]}");
                             Console.WriteLine($"You: Vertical:{position[0]}, Horizontal:{position[1]}");
                         }
-                        else { Console.WriteLine("You do not have this item!"); };
+                        else { Console.WriteLine("You need to be inside a dungeon to use this item"); };
                     }
-                    else { Console.WriteLine("You need to be inside a dungeon to use this item"); }
+                    else { Console.WriteLine("You do not have this item!"); }
 
 
                     break;
@@ -272,13 +271,13 @@ namespace Viscachas_Gate
 
 
 
-        public float DealDamage(int pChosenWeapon, Enemy pEnemy)
+        public float DealDamage(int pChosenWeapon, Enemy pEnemy, Random pRandom)
         {
             //gets the weapon stats
-            int baseDamage = random.Next(inventory.GetEquippedItems()[pChosenWeapon].GetItemDamage()[0], inventory.GetEquippedItems()[pChosenWeapon].GetItemDamage()[1]);
+            int baseDamage = pRandom.Next(inventory.GetEquippedItems()[pChosenWeapon].GetItemDamage()[0], inventory.GetEquippedItems()[pChosenWeapon].GetItemDamage()[1]);
 
             //calculates the crit chance and damage
-            float critical = random.Next(0, 101) <= criticalChance ? criticalMultiplier : 1f;
+            float critical = pRandom.Next(0, 101) <= criticalChance ? criticalMultiplier : 1f;
 
             float damageDone = ((baseDamage * strength) * critical) / 100f * (100f - pEnemy.GetArmor());
 
@@ -324,10 +323,6 @@ namespace Viscachas_Gate
 
 
         public void MaxHeal() => SetHealth(maxHealth);
-        public void PotionHeal()
-        {
-            int healedAmount = random.Next((int)maxHealth / 2, (int)maxHealth / 4 * 3);
-            health += (healedAmount + health !> maxHealth) ? healedAmount : maxHealth - health ;
-        }
+        public void PotionHeal() => health = maxHealth;
     }
 }

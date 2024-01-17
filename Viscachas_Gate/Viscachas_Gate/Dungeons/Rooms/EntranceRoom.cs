@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class EntranceRoom : TemplateRoom
     {
         /// <summary>

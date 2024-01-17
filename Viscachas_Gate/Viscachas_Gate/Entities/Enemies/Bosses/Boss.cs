@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class Boss : Enemy
     {
         public Boss(Player pPlayer)
@@ -17,7 +18,7 @@ namespace Viscachas_Gate
             strength += 0.2f * pPlayer.GetDungeonProgress();
             maxHealth += 250 * pPlayer.GetDungeonProgress();
             health += 250 * pPlayer.GetDungeonProgress();
-            armor = 15;
+            armor = 10 * pPlayer.GetDungeonProgress();
             baseDamageStats = new int[] { 5, 16 };
 
             experienceModifier = 2.5f;

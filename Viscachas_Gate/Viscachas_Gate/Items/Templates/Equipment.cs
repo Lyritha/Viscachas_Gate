@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Viscachas_Gate
 {
+    [Serializable]
     internal class Equipment : Item
     {
         protected int[] itemDamage = {0, 1};
