@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Viscachas_Gate
 {
-    internal class DungeonGenerator
+    internal class Dungeon
     {
         Random random = new Random();
 
@@ -31,7 +31,7 @@ namespace Viscachas_Gate
         /// creates a new object that holds a randomly generated dungeon with connected rooms
         /// </summary>
         /// <param name="pDungeonDimensions"></param>
-        public DungeonGenerator(int pDungeonDimensions = 10, int pDungeonLevel = 5)
+        public Dungeon(int pDungeonDimensions = 10, int pDungeonLevel = 5)
         {
             //sets the level of this dungeon
             dungeonLevel = pDungeonLevel;

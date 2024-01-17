@@ -14,7 +14,7 @@ namespace Viscachas_Gate
 
         Enemy enemy;
         Player player;
-        DungeonGenerator dungeon;
+        Dungeon dungeon;
 
         //keeps track of your ui position
         int[] uiPosition = { 0, 0 };
@@ -33,7 +33,7 @@ namespace Viscachas_Gate
 
 
 
-        public void UpdateDungeonVar(DungeonGenerator pDungeon) => dungeon = pDungeon;
+        public void UpdateDungeonVar(Dungeon pDungeon) => dungeon = pDungeon;
 
 
 
@@ -41,10 +41,10 @@ namespace Viscachas_Gate
         /// when a bossfight is required run this code
         /// </summary>
         /// <returns></returns>
-        public bool StartBossfight()
+        public bool StartBossfight(AudioHandler pAudioHandler)
         {
 
-            enemy = new Boss();
+            enemy = new Boss(player);
             enemy.AssignLevelStats(dungeon.GetDungeonLevel());
 
             //clears the console before commencing combat
@@ -54,12 +54,7 @@ namespace Viscachas_Gate
             BattleLoop();
 
             bool playerWon = enemy.GetHealth() < player.GetHealth();
-
-            if (playerWon)
-            {
-                player.AddExperience(enemy.GetDroppedExperience());
-                player.AddCoins(enemy.GetDroppedCoins());
-            }
+            WinLossScreen(playerWon, pAudioHandler);
 
             //returns true if you won the fight, false if you lost
             return playerWon;
@@ -72,7 +67,7 @@ namespace Viscachas_Gate
         /// </summary>
         /// <param name="pPlayer"></param>
         /// <param name="pEnemy"></param>
-        public bool StartEncounter()
+        public bool StartEncounter(AudioHandler pAudioHandler)
         {
             //generates the enemy
             GenerateEnemy();
@@ -83,38 +78,8 @@ namespace Viscachas_Gate
             //loops until the fight is over
             BattleLoop();
 
-
             bool playerWon = enemy.GetHealth() < player.GetHealth();
-
-            if (playerWon)
-            {
-                Console.WriteLine("You won!");
-
-                int droppedExperience = enemy.GetDroppedExperience();
-                int droppedCoins = enemy.GetDroppedCoins();
-
-                //display the winning screen
-                DisplayWin(droppedExperience, droppedCoins);
-                Console.ReadKey(true);
-
-                //apply changes of experience and coins
-                player.AddExperience(droppedExperience);
-                player.AddCoins(droppedCoins);
-
-                //if the player doesn't have a map and the enemy dropped one
-                if (enemy.GetDroppedMap() && !player.GetInventory().ContainsByID(100 + player.GetDungeonProgress())) 
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("The enemy dropped a map!");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    player.GetInventory().AddItem(new Map(player.GetDungeonProgress())); 
-                }
-            }
-            else
-            {
-                Console.WriteLine("You lost...");
-                Console.ReadKey(true);
-            }
+            WinLossScreen(playerWon, pAudioHandler);
 
 
             //returns true if you won the fight, false if you lost
@@ -201,6 +166,42 @@ namespace Viscachas_Gate
                 Console.ReadKey(true);
 
             } while (player.GetHealth() != 0 && enemy.GetHealth() != 0);
+        }
+        void WinLossScreen(bool pPlayerWon, AudioHandler pAudioHandler)
+        {
+            Console.Clear();
+
+            if (pPlayerWon)
+            {
+                Console.WriteLine("You won!");
+
+                int droppedExperience = enemy.GetDroppedExperience();
+                int droppedCoins = enemy.GetDroppedCoins();
+
+                //display the winning screen
+                DisplayWin(droppedExperience, droppedCoins);
+                pAudioHandler.PlayWinEffect();
+                
+                Console.ReadKey(true);
+
+                //apply changes of experience and coins
+                player.AddExperience(droppedExperience);
+                player.AddCoins(droppedCoins);
+
+                //if the player doesn't have a map and the enemy dropped one
+                if (enemy.GetDroppedMap() && !player.GetInventory().ContainsByID(100 + player.GetDungeonProgress()))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("The enemy dropped a map!");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    player.GetInventory().AddItem(new Map(player.GetDungeonProgress()));
+                }
+            }
+            else
+            {
+                Console.WriteLine("You lost...");
+                Console.ReadKey(true);
+            }
         }
 
 
@@ -478,11 +479,13 @@ namespace Viscachas_Gate
 
         void DisplayStatInfo()
         {
+            Console.ForegroundColor = ConsoleColor.White;
             player.PrintShowStats();
             enemy.PrintShowStats();
         }
         void DisplayStatInfoDamage()
         {
+            Console.ForegroundColor = ConsoleColor.White;
             player.PrintShowStatsDamage(enemyDamage);
             enemy.PrintShowStatsDamage(playerDamage);
         }

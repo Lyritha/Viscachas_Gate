@@ -12,6 +12,8 @@ namespace Viscachas_Gate
         WindowsMediaPlayer dungeonMusic = null;
         WindowsMediaPlayer bossMusic = null;
 
+        WindowsMediaPlayer winEffect = null;
+
         public AudioHandler()
         {
             //import all the music and stops the music to make sure it doesn't all suddenly play
@@ -19,6 +21,10 @@ namespace Viscachas_Gate
             openWorldMusic = CreateAudioChannel("Audio/Music/scott-buckley-phaseshift.mp3", true);
             dungeonMusic = CreateAudioChannel("Audio/Music/Ghostrifter-Official-Resurgence.mp3", true);
             bossMusic = CreateAudioChannel("Audio/Music/Damiano-Baldoni-Charlotte.mp3", true);
+
+            //sound effects
+            winEffect = CreateAudioChannel("Audio/yippee-tbh.mp3", false);
+
         }
 
 
@@ -38,9 +44,13 @@ namespace Viscachas_Gate
         /// plays the boss music, blends from and to other songs if needed
         /// </summary>
         public async void PlayBossMusic() => await Task.WhenAll(FadeInAudioAsync(bossMusic), FadeOutAudioAsync(mainMenuMusic), FadeOutAudioAsync(openWorldMusic), FadeOutAudioAsync(dungeonMusic));
-        
 
-        
+
+
+        public void PlayWinEffect() => winEffect.controls.play();
+
+
+
         /// <summary>
         /// handles increasing the volume of a media player smoothly
         /// </summary>

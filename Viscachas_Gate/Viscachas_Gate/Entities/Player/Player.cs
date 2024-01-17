@@ -39,7 +39,7 @@ namespace Viscachas_Gate
         /// </summary>
         /// <param name="pDungeon"></param>
         /// <param name="pOpenWorld"></param>
-        public void PlayerInput(OpenWorld pOpenWorld, DungeonGenerator pDungeon = null)
+        public void PlayerInput(OpenWorld pOpenWorld, Dungeon pDungeon = null)
         {
             //tells the user how to control the player
             Console.Write("WASD to walk around, Q to give text input.");
@@ -87,7 +87,7 @@ namespace Viscachas_Gate
                     break;
             }
         }
-        void TextInput(DungeonGenerator pDungeon)
+        void TextInput(Dungeon pDungeon)
         {
             string playerInput = Console.ReadLine().ToLower();
 
@@ -176,7 +176,7 @@ namespace Viscachas_Gate
         /// <param name="pDungeon"></param>
         /// <param name="pDirection"></param>
         /// <returns></returns>
-        void DungeonMove(DungeonGenerator pDungeon, int pDirection)
+        void DungeonMove(Dungeon pDungeon, int pDirection)
         {
 
             if (pDungeon.GetRoomObject(position).GetHallways()[pDirection])

@@ -10,12 +10,12 @@ namespace Viscachas_Gate
         
         Player player = null;
         OpenWorld openWorld = null;
-        DungeonGenerator dungeon = null;
+        Dungeon dungeon = null;
         
         Combat combat = null;
 
         StoryLibrary storyLibrary = null;
-        WritingStyles writingStyles = new();
+        PrintBehaviors printBehaviors = new();
 
 
         //base dungeon information
@@ -57,7 +57,7 @@ namespace Viscachas_Gate
             //runs while the player hasn't finished all the dungeons yet
             while (player.GetDungeonProgress() <= 5)
             {
-                writingStyles.ClearBuffer();
+                printBehaviors.ClearBuffer();
                 Console.Clear();
 
                 //updates the screen to show the open world
@@ -77,6 +77,7 @@ namespace Viscachas_Gate
             }
 
             //once the game is cleared
+            menu.GameWinScreen();
         }
 
         void EnterDungeon()
@@ -85,7 +86,7 @@ namespace Viscachas_Gate
             audioHandler.PlayDungeonMusic();
 
             //creates a new dungeon, overwriting any previously generated dungeon
-            dungeon = new DungeonGenerator(15, dungeonLevel);
+            dungeon = new Dungeon(15, dungeonLevel);
             combat.UpdateDungeonVar(dungeon);
 
             //spawns the player in the dungeon, and tells the player it is in the dungeon
@@ -98,7 +99,7 @@ namespace Viscachas_Gate
             //dungeon loop, keeps running until either the dungeon is cleared or the player died
             while (player.GetHealth() != 0 && !dungeon.GetIsDungeonCleared())
             {
-                writingStyles.ClearBuffer();
+                printBehaviors.ClearBuffer();
                 Console.Clear();
 
 
@@ -141,7 +142,7 @@ namespace Viscachas_Gate
                 //start playing boss music
                 audioHandler.PlayBossMusic();
 
-                if (combat.StartBossfight())
+                if (combat.StartBossfight(audioHandler))
                 {
                     //if the player clears this dungeon
                     dungeon.SetIsDungeonCleared(true);
@@ -151,7 +152,13 @@ namespace Viscachas_Gate
             //check if room is store
             else if(currentRoom is StoreRoom)
             {
-                menu.StoreMenu(dungeonLevel,player);
+                Console.WriteLine();
+                printBehaviors.OverwriteLines(1);
+                Console.WriteLine("Would you like to enter the store?");
+                if (storyLibrary.AskPlayer())
+                {
+                    menu.StoreMenu(dungeonLevel, player);
+                }
             }
             
             //check if room is a normal room
@@ -161,7 +168,7 @@ namespace Viscachas_Gate
 
                 if (room.GetEnemyEncounter())
                 {
-                    if (combat.StartEncounter())
+                    if (combat.StartEncounter(audioHandler))
                     { 
                         room.SetEnemyEncounter(false);
 

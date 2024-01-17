@@ -11,7 +11,7 @@ namespace Viscachas_Gate
         List<string[]> asciiMainMenu = new List<string[]>();
 
         //allows for fancy writing to the screen
-        WritingStyles writingStyles = new WritingStyles();
+        PrintBehaviors printBehaviors = new PrintBehaviors();
         StoryLibrary storyLibrary = null;
 
         //stat distribution menu related variables
@@ -35,15 +35,10 @@ namespace Viscachas_Gate
         /// </summary>
         public int MainMenu()
         {
+            Console.Clear();
 
             int uiPosition = 0;
             bool uiChosen = false;
-
-            //say stuff to player to fullscreen application
-            Console.WriteLine("Please fullscreen the application (f11) to continue, otherwise application might crash");
-            Console.WriteLine("Press any key to continue");
-            Console.ReadKey(true);
-            Console.Clear();
 
             //ui update loop with player input, for now selection doesn't actually matter, but planning for save files to be implemented in the future
             while (!uiChosen)
@@ -88,7 +83,7 @@ namespace Viscachas_Gate
                         if (uiPosition < 2) { uiPosition++; }
                         break;
 
-                    default:
+                    case "enter":
                         uiChosen = true;
                         break;
                 }
@@ -110,6 +105,7 @@ namespace Viscachas_Gate
             Console.WriteLine("'inv' to open your inventory.");
             Console.WriteLine("'heal' to heal yourself with a potion.");
             Console.WriteLine("'compass' to get your own coordinates and the boss rooms coordinates.");
+            Console.WriteLine("'map' to display the map of the dungeon if you own a map.");
 
             Console.WriteLine();
 
@@ -129,9 +125,14 @@ namespace Viscachas_Gate
                 {
                     Console.WriteLine("Are you sure that you wish to close the application? Yes/No");
                     if (storyLibrary.AskPlayer()) { Environment.Exit(0); }
-                    else { writingStyles.OverwriteLines(1); }
+                    else { printBehaviors.OverwriteLines(1); }
                 }
             } while (userInput != "escape" && userInput != "~");
+        }
+        public void GameWinScreen()
+        {
+            Console.Clear();
+            Console.WriteLine("You won the game!");
         }
 
 
@@ -141,7 +142,7 @@ namespace Viscachas_Gate
         /// </summary>
         /// <param name="pDungeon"></param>
         /// <param name="pPlayerPosition"></param>
-        public void MapMenu(DungeonGenerator pDungeon, int[] pPlayerPosition)
+        public void MapMenu(Dungeon pDungeon, int[] pPlayerPosition)
         {
 
 
@@ -272,112 +273,106 @@ namespace Viscachas_Gate
         /// <param name="pPlayer"></param>
         public void StoreMenu(int pDungeonLevel, Player pPlayer)
         {
-            Console.Clear();
 
-            Console.WriteLine($"Coins: {pPlayer.GetInventory().GetCoins()}");
-            Console.WriteLine();
 
-            //gets the cost of all the items
-            int mapCost = 250 * pDungeonLevel;
-            int potionCost = 1200 * pPlayer.GetInventory().GetMaxHealingPotionAmount();
-            int armorCost = 500 + 500 * (int)pPlayer.GetArmor();
-
-            //show items you can purchase
-            Console.WriteLine($"Map: {mapCost} coins");
-            Console.WriteLine($"Max Potions: {potionCost} coins");
-            Console.WriteLine($"Armor +2: {armorCost} coins");
-            Console.WriteLine();
-
-            //ask player what item they wish to buy
-            Console.WriteLine("Would you like to purchase an item?");
-            if (storyLibrary.AskPlayer())
+            bool isInStore = true;
+            while (isInStore)
             {
-                writingStyles.OverwriteLines(1);
+                Console.Clear();
+
+                Console.WriteLine($"Coins: {pPlayer.GetInventory().GetCoins()}");
+                Console.WriteLine();
+
+                //gets the cost of all the items
+                int mapCost = 250 * pDungeonLevel;
+                int potionCost = 1200 * pPlayer.GetInventory().GetMaxHealingPotionAmount();
+                int armorCost = 500 + 500 * (int)pPlayer.GetArmor();
+
+                //show items you can purchase
+                Console.WriteLine($"Map: {mapCost} coins");
+                Console.WriteLine($"Max Potions: {potionCost} coins");
+                Console.WriteLine($"Armor +2: {armorCost} coins");
+                Console.WriteLine();
+
                 Console.WriteLine("Which item would you like to buy?\nType 'stop' to stop shopping");
+                Console.WriteLine();
 
-                bool done = false;
                 string userInput = "";
-                while (!done)
+
+                userInput = Console.ReadLine().ToLower();
+
+                switch (userInput)
                 {
-                    userInput = Console.ReadLine().ToLower();
-
-                    switch (userInput)
-                    {
-                        //if player wants to purchase map
-                        case "map":
-                            //check if player has a map for this dungeon
-                            if (!pPlayer.GetInventory().ContainsByID(100 + pPlayer.GetDungeonProgress()))
-                            {
-                                //check if player has enough money
-                                if (pPlayer.GetInventory().GetCoins() >= mapCost)
-                                {
-                                    //removes the paid money
-                                    pPlayer.GetInventory().AddCoins(-mapCost);
-
-                                    //update inventory to reflect purchase
-                                    pPlayer.GetInventory().AddItem(new Map(pPlayer.GetDungeonProgress()));
-
-                                    Console.WriteLine($"You purchased a map!");
-                                }
-                                else { Console.WriteLine("You do not have enough Coins!"); }
-                            } else { Console.WriteLine("You already have a map for this dungeon!"); }
-                            break;
-
-                        //if player wants to purchase a healing potion
-                        case "healing potion":
-                        case "potion":
-                        case "healing":
-                        case "max potions":
-                        case "max potion":
-                        case "max healing potions":
-                        case "max healing potion":
-                        case "max healing":
+                    //if player wants to purchase map
+                    case "map":
+                        //check if player has a map for this dungeon
+                        if (!pPlayer.GetInventory().ContainsByID(100 + pPlayer.GetDungeonProgress()))
+                        {
                             //check if player has enough money
-                            if (pPlayer.GetInventory().GetCoins() >= potionCost)
+                            if (pPlayer.GetInventory().GetCoins() >= mapCost)
                             {
                                 //removes the paid money
-                                pPlayer.GetInventory().AddCoins(-potionCost);
+                                pPlayer.GetInventory().AddCoins(-mapCost);
 
                                 //update inventory to reflect purchase
-                                pPlayer.GetInventory().AddMaxHealingPotionAmount(1);
+                                pPlayer.GetInventory().AddItem(new Map(pPlayer.GetDungeonProgress()));
 
-                                Console.WriteLine("You purchased another potion slot!");
+                                Console.WriteLine($"You purchased a map!");
                             }
                             else { Console.WriteLine("You do not have enough Coins!"); }
-                            break;
+                        }
+                        else { Console.WriteLine("You already have a map for this dungeon!"); }
+                        break;
 
-                        case "armor":
-                            //check if player has enough money
-                            if (pPlayer.GetInventory().GetCoins() >= armorCost)
-                            {
-                                //removes the paid money
-                                pPlayer.GetInventory().AddCoins(-armorCost);
+                    //if player wants to purchase a healing potion
+                    case "healing potion":
+                    case "potion":
+                    case "healing":
+                    case "max potions":
+                    case "max potion":
+                    case "max healing potions":
+                    case "max healing potion":
+                    case "max healing":
+                        //check if player has enough money
+                        if (pPlayer.GetInventory().GetCoins() >= potionCost)
+                        {
+                            //removes the paid money
+                            pPlayer.GetInventory().AddCoins(-potionCost);
 
-                                //update stats to reflect purchase
-                                pPlayer.AddArmor(2  );
+                            //update inventory to reflect purchase
+                            pPlayer.GetInventory().AddMaxHealingPotionAmount(1);
 
-                                Console.WriteLine("You purchased +2 armor");
-                            }
-                            else { Console.WriteLine("You do not have enough Coins!"); }
-                            break;
+                            Console.WriteLine("You purchased another potion slot!");
+                        }
+                        else { Console.WriteLine("You do not have enough Coins!"); }
+                        break;
 
-                        //if the player no longer wants to buy something
-                        case "stop":
-                            done = true;
-                            break;
+                    case "armor":
+                        //check if player has enough money
+                        if (pPlayer.GetInventory().GetCoins() >= armorCost)
+                        {
+                            //removes the paid money
+                            pPlayer.GetInventory().AddCoins(-armorCost);
 
-                        //if player gave an incorrect input
-                        default:
-                            Console.WriteLine($"{userInput} is not sold here");
-                            break;
-                    }
+                            //update stats to reflect purchase
+                            pPlayer.AddArmor(2);
+
+                            Console.WriteLine("You purchased +2 armor");
+                        }
+                        else { Console.WriteLine("You do not have enough Coins!"); }
+                        break;
+
+                    //if the player no longer wants to buy something
+                    case "stop":
+                        isInStore = false;
+                        break;
+
+                    //if player gave an incorrect input
+                    default:
+                        Console.WriteLine($"{userInput} is not sold here");
+                        break;
                 }
 
-            }
-            else
-            {
-                writingStyles.OverwriteLines(2);
-                Console.WriteLine("Press any key to close the store");
                 Console.ReadKey(true);
             }
 
@@ -405,24 +400,24 @@ namespace Viscachas_Gate
             //stores if the user wants this username or not
             bool nameChose = false;
             //loops until user likes their name
-            writingStyles.WriteLineCharactersSlowly("Character Creation\n\n");
+            printBehaviors.WriteLineCharactersSlowly("Character Creation\n\n");
             while (!nameChose)
             {
                 //clears current line and places the cursor at the beginning of said line
-                writingStyles.OverwriteLines();
+                printBehaviors.OverwriteLines();
 
-                writingStyles.WriteCharactersSlowly("Choose your name: ");
+                printBehaviors.WriteCharactersSlowly("Choose your name: ");
                 pPlayer.SetName(Console.ReadLine());
 
                 //clears current line and places the cursor at the beginning of said line
-                writingStyles.OverwriteLines();
+                printBehaviors.OverwriteLines();
 
                 //write information to give user choice
-                writingStyles.WriteLineCharactersSlowly($"Do you want {pPlayer.GetName()} to be your name? yes/no");
+                printBehaviors.WriteLineCharactersSlowly($"Do you want {pPlayer.GetName()} to be your name? yes/no");
                 nameChose = pStoryLibrary.AskPlayer();
             }
 
-            writingStyles.OverwriteLines(3);
+            printBehaviors.OverwriteLines(3);
         }
         public void StatDistributionMenu(Player pPlayer)
         {
@@ -531,7 +526,7 @@ namespace Viscachas_Gate
                         break;
                 }
 
-                writingStyles.OverwriteLines(8);
+                printBehaviors.OverwriteLines(8);
             }
 
             //update all the stats by adding the values

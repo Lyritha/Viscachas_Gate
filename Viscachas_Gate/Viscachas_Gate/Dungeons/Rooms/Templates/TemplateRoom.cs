@@ -34,10 +34,6 @@ namespace Viscachas_Gate
         int roomIndex = 0;
         bool[] hallwayLayout = new bool[4];
 
-        //objects
-        bool hasChest = false;
-
-
         //stores the artwork of this room
         string roomArt = "Placeholder";
 
