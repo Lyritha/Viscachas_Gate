@@ -15,7 +15,7 @@ namespace Viscachas_Gate
             SetName("Wraith");
             AddMaxHealth(-50);
             AddArmor(15 + (int)(1f * GetLevel()));
-            AddStrength(0.5f * GetLevel());
+            AddStrength(0.1f * GetLevel());
             AddSpeed(2 + (int)(0.30 * GetLevel()));
             experienceModifier = 1.5f;
             droppedCoinsModifier = 1.4f;

@@ -16,7 +16,7 @@ namespace Viscachas_Gate
             AddMaxHealth(-50);
             AddMaxHealth(5 * GetLevel());
             AddArmor(5 + (int)(0.5f * GetLevel()));
-            AddStrength(0.2f * GetLevel());
+            AddStrength(0.1f * GetLevel());
             AddSpeed((int)(0.2 * GetLevel()));
             experienceModifier = 0.8f;
             droppedCoinsModifier = 0.9f;

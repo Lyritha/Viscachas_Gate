@@ -13,9 +13,9 @@ namespace Viscachas_Gate
         {
             //change some base stats for the zombie sub-class
             SetName("Zombie");
-            AddMaxHealth(25 * GetLevel());
+            AddMaxHealth(15 * GetLevel());
             AddArmor(1 + (int)(0.1f * GetLevel()));
-            AddStrength(0.2f * GetLevel());
+            AddStrength(0.1f * GetLevel());
             AddSpeed(1 + (int)(0.05 * GetLevel()));
             experienceModifier = 1.05f;
             droppedCoinsModifier = 1.1f;

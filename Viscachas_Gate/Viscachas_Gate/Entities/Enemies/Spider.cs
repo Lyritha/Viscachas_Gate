@@ -13,9 +13,9 @@ namespace Viscachas_Gate
         {
             //change some base stats for the spider sub-class
             SetName("Spider");
-            AddMaxHealth(20 * GetLevel());
+            AddMaxHealth(10 * GetLevel());
             AddArmor(2 + (int)(0.2f * GetLevel()));
-            AddStrength(0.3f * GetLevel());
+            AddStrength(0.15f * GetLevel());
             AddSpeed(3 + (int)(0.5 * GetLevel()));
             experienceModifier = 1.5f;
             droppedCoinsModifier = 1.3f;
