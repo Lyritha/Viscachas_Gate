@@ -10,10 +10,12 @@ namespace Viscachas_Gate
     internal class Item
     {
         protected string name = "N/a";
+        protected string flavorText;
         protected int UniqueID = 0;
         protected int amount = 0;
 
         public string GetName() => name;
+        public string GetFlavorText() => flavorText;
         public int GetAmount() => amount;
         public int GetUniqueID() => UniqueID;
 

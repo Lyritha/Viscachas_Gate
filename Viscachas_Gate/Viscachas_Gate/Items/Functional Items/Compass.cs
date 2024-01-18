@@ -12,6 +12,7 @@ namespace Viscachas_Gate
         public Compass() 
         {
             name = "Compass";
+            flavorText = "Use this item to find 1 store and the location of the boss in coordinates (0,0 is top left).";
         }
     }
 }

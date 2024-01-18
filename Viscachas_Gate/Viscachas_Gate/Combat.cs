@@ -109,7 +109,7 @@ namespace Viscachas_Gate
             int enemyLevel = 0;
 
             //if the player is still under the dungeon's level
-            if (playerLevel <= dungeonLevel)
+            if (playerLevel <= dungeonLevel + 1)
             {
                 //set enemy level based on player level
                 enemyLevel = random.Next(playerLevel - 3, playerLevel + 1);
@@ -160,8 +160,8 @@ namespace Viscachas_Gate
                 player.TakeDamage(enemyDamage);
 
                 //resets the health to 0 if health is below it
-                if (player.GetHealth() < 0.99f) { player.SetHealth(0); }
-                if (enemy.GetHealth() < 0.99f) { enemy.SetHealth(0); }
+                if (player.GetHealth() < 0.60f) { player.SetHealth(0); }
+                if (enemy.GetHealth() < 0.60f) { enemy.SetHealth(0); }
 
                 Console.ReadKey(true);
 

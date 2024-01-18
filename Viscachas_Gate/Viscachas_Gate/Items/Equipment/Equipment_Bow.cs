@@ -14,6 +14,8 @@ namespace Viscachas_Gate
             name = "Bow";
             itemDamage = new int[] {2,18 };
             speedBonus = 5f;
+
+            flavorText = "I can use this to shoot very far, but i can get a bad shot too.";
         }
     }
 }

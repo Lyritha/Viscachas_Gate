@@ -5,10 +5,9 @@ namespace Viscachas_Gate
 {
     internal class Program
     {
-
-
         static void Main(string[] args)
         {
+            //creates a new object
             SaveData saveData = new SaveData();
 
             StoryLibrary storyLibrary = new();
@@ -17,34 +16,44 @@ namespace Viscachas_Gate
             AudioHandler audioHandler = new();
             MainGame mainGame;
 
+            //sets the console text color to white
             Console.ForegroundColor = ConsoleColor.White;
 
-            //play main menu music
+            //write text to screen, and call method inside audio handler
             Console.WriteLine("Initializing AudioHandler...");
             audioHandler.PlayMainMenuMusic();
 
-            //say stuff to player to fullscreen application
-            Console.WriteLine("Please fullscreen the application (f11) to continue, otherwise application might crash\nThis application might break on some devices, especially windows 10 or older.");
+            //asks player to fullscreen application
+            Console.WriteLine("Please fullscreen the application (f11) to continue, this is reccomended for the best experience.\nThis application might break on some devices, especially windows 10 or older.");
             Console.WriteLine("Press any key to continue");
+            //waits for a key input, true will make it not write to screen
             Console.ReadKey(true);
+            //clears the console
             Console.Clear();
 
+            //creates a new bool with the value of false
             bool selected = false;
+            //loops until selected is true
             while (!selected)
             {
+                //calls method MainMenu of Menus class, and uses it's output to decide what gets loaded
                 switch (menu.MainMenu())
                 {
                     //continue game
                     case 0:
+                        //tries an action, if any error occurs that would normally crash the game it will execute the code in catch
                         try
                         {
                             mainGame = saveData.LoadMainGame("mainGame");
                             mainGame.LoadGame(saveData, audioHandler);
+                            //sets selected to true
                             selected = true;
                         }
                         catch
                         {
+                            //uses a custom method to write to the screen
                             printBehaviors.WriteLineCharactersSlowly("You do not have a save file.", 1);
+                            //clears any key presses to make sure readykey doesn't get triggered from keypresses during last line
                             printBehaviors.ClearBuffer();
                             Console.ReadKey(true);
                         }
@@ -52,7 +61,9 @@ namespace Viscachas_Gate
 
                     //new game
                     case 1:
-                        //storyLibrary.Intro();
+                        //writes the main story of the game to the screen
+                        storyLibrary.Intro();
+                        //creates a new mainGame with given parameters
                         mainGame = new(storyLibrary, menu);
                         mainGame.NewGame(saveData, audioHandler);
                         selected = true;

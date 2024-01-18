@@ -14,6 +14,8 @@ namespace Viscachas_Gate
             name = "Sword";
             itemDamage = new int[] { 6, 12 };
             speedBonus = 0f;
+
+            flavorText = "This item is very sharp, i should be careful with it.";
         }
     }
 }

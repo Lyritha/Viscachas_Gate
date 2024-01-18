@@ -39,12 +39,15 @@ namespace Viscachas_Gate
             //display basic information
             Console.WriteLine($"Coins: {moneyAmount}");
             Console.WriteLine($"Healing Potions: {healingPotionAmount}/{maxHealingPotionAmount}");
-            Console.WriteLine();
+            Console.WriteLine("\n\n");
 
             //shows equipped equipment
             Console.WriteLine($"Slot 1: {equippedItems[0].GetName()} : Min Damage:{equippedItems[0].GetItemDamage()[0]}, Max Damage:{equippedItems[0].GetItemDamage()[1]}");
-            Console.WriteLine($"Slot 2: {equippedItems[1].GetName()} : Min Damage:{equippedItems[1].GetItemDamage()[0]}, Max Damage:{equippedItems[1].GetItemDamage()[1]}");
+            Console.WriteLine(equippedItems[0].GetFlavorText());
             Console.WriteLine();
+            Console.WriteLine($"Slot 2: {equippedItems[1].GetName()} : Min Damage:{equippedItems[1].GetItemDamage()[0]}, Max Damage:{equippedItems[1].GetItemDamage()[1]}");
+            Console.WriteLine(equippedItems[1].GetFlavorText());
+            Console.WriteLine("\n\n");
 
 
             if (itemList.Count > 0)
@@ -54,6 +57,7 @@ namespace Viscachas_Gate
                 {
                     string itemAmount = (item.GetAmount() != 0) ? $"Amount: {item.GetAmount()}" : "";
                     Console.WriteLine($"- {item.GetName()} {itemAmount}");
+                    Console.WriteLine(item.GetFlavorText());
                 }
             } 
             else 

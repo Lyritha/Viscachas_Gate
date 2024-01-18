@@ -39,7 +39,7 @@ namespace Viscachas_Gate
                     name = "Resonant Vaults";
                     break;
             }
-
+            flavorText = "Use this item to see the entire current dungeon.";
         }
     }
 }

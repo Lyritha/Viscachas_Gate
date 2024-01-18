@@ -8,6 +8,8 @@
     <StartupObject>Viscachas_Gate.Program</StartupObject>
     <Title>Viscacha's Gate</Title>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <IsPublishable>False</IsPublishable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -46,6 +48,10 @@
       <Isolated>false</Isolated>
       <EmbedInteropTypes>true</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="icon.ico" />
   </ItemGroup>
 
   <ItemGroup>

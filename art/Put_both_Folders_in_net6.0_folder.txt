@@ -1,1 +1,0 @@
-put ascii_art folder into the bin/debug(or release)/net6.0 folder when running program
