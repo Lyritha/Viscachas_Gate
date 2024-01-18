@@ -14,7 +14,7 @@ namespace Viscachas_Gate
             //change some base stats for the Guardian sub-class
             SetName("Guardian");
 
-            statPointsAmount += 40 * pPlayer.GetDungeonProgress();
+            statPointsAmount += 30 * pPlayer.GetDungeonProgress();
             strength += 0.2f * pPlayer.GetDungeonProgress();
             maxHealth += 250 * pPlayer.GetDungeonProgress();
             health += 250 * pPlayer.GetDungeonProgress();

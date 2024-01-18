@@ -13,8 +13,8 @@ namespace Viscachas_Gate
         {
             //change some base stats for the wraith sub-class
             SetName("Wraith");
-            AddMaxHealth(-50);
-            AddArmor(15 + (int)(1f * GetLevel()));
+            AddMaxHealth(-25);
+            AddArmor(10 + (int)(1f * GetLevel()));
             AddStrength(0.1f * GetLevel());
             AddSpeed(2 + (int)(0.30 * GetLevel()));
             experienceModifier = 1.5f;

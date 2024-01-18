@@ -16,12 +16,14 @@ namespace Viscachas_Gate
         protected float droppedCoinsModifier = 1;
 
         //stores the base damage the entity does, allows for adjusting
-        protected int[] baseDamageStats = { 4, 16 };
+        protected int[] baseDamageStats = { 2, 12 };
 
         protected int mapDropChance = 5;
 
         protected void RandomStats()
         {
+            statPointsAmount -= 5;
+
             float[] statMultipliers = GetStatMultiplier();
 
             while (GetStatPointsAmount() >= 0)

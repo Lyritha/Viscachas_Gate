@@ -62,7 +62,7 @@ namespace Viscachas_Gate
                     //new game
                     case 1:
                         //writes the main story of the game to the screen
-                        storyLibrary.Intro();
+                        //storyLibrary.Intro();
                         //creates a new mainGame with given parameters
                         mainGame = new(storyLibrary, menu);
                         mainGame.NewGame(saveData, audioHandler);
